@@ -6,4 +6,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\ProgressAcademy.Application\ProgressAcademy.Application.csproj" />
+      <ProjectReference Include="..\ProgressAcademy.Domain\ProgressAcademy.Domain.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -4,14 +4,21 @@
         <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="MongoDB.Driver" Version="2.22.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers" />
+      <ProjectReference Include="..\ProgressAcademy.Handlers\ProgressAcademy.Handlers.csproj" />
+      <ProjectReference Include="..\ProgressAcademy.Infrastructure\ProgressAcademy.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\ProgressAcademy.Application\ProgressAcademy.Application.csproj" />
+    </ItemGroup>
+    
 </Project>
