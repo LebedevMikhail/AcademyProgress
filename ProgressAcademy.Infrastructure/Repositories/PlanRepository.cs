@@ -6,14 +6,14 @@ namespace ProgressAcademy.Infrastructure.Repositories;
 
 public class PlanRepository : IPlanRepository
 {
-    private readonly IMongoCollection<Plan?> _planCollection;
+    private readonly IMongoCollection<Plan> _planCollection;
 
     public PlanRepository(IMongoDatabase database)
     {
         _planCollection = database.GetCollection<Plan>("plans");
     }
 
-    public List<Plan?> GetAllPlans()
+    public List<Plan> GetAllPlans()
     {
         return _planCollection.Find(_ => true).ToList();
     }
@@ -23,22 +23,22 @@ public class PlanRepository : IPlanRepository
         return _planCollection.Find(plan => plan.Id == planId).FirstOrDefault();
     }
 
-    public void CreatePlan(Plan? plan)
+    public void CreatePlan(Plan plan)
     {
         _planCollection.InsertOne(plan);
     }
 
     public void UpdatePlan(Plan plan)
     {
-        FilterDefinition<Plan?> filter = Builders<Plan>.Filter.Eq("_id", plan.Id);
-        UpdateDefinition<Plan?> update = Builders<Plan>.Update
+        FilterDefinition<Plan> filter = Builders<Plan>.Filter.Eq("_id", plan.Id);
+        UpdateDefinition<Plan> update = Builders<Plan>.Update
             .Set("Title", plan.Title);
         _planCollection.UpdateOne(filter, update);
     }
 
     public void DeletePlan(int planId)
     {
-        FilterDefinition<Plan?> filter = Builders<Plan>.Filter.Eq("_id", planId);
+        FilterDefinition<Plan> filter = Builders<Plan>.Filter.Eq("_id", planId);
         _planCollection.DeleteOne(filter);
     }
 }

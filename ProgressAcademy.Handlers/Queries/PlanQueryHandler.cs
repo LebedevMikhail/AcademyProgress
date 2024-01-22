@@ -17,8 +17,7 @@ public class PlanQueryHandler
 
     public Plan Handle(GetPlanByIdQuery query)
     {
-        var res =  _planRepository.GetPlanById(query.PlanId);
-        return res;
+        return  _planRepository.GetPlanById(query.PlanId);
     }
 
     public IEnumerable<Plan?> Handle(GetAllPlansQuery query)

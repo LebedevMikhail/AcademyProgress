@@ -12,8 +12,8 @@ namespace ProgressAcademy.WebApi.Controllers;
 [Route("api/[controller]")]
 public class PlanController : ControllerBase
 {
-   private readonly  PlanQueryHandler _planQueryHandler;
-   private readonly  PlanCommandHandler _planCommandHandler;
+   private readonly PlanQueryHandler _planQueryHandler;
+   private readonly PlanCommandHandler _planCommandHandler;
    
    public PlanController(PlanQueryHandler planQueryHandler, PlanCommandHandler planCommandHandler)
     {
