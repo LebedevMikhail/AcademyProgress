@@ -4,7 +4,8 @@ using ProgressAcademy.Domain.ReadModels;
 
 namespace ProgressAcademy.Domain.Models;
 
-public class Lesson {
+public class Lesson
+{
     [BsonId]
     [BsonRepresentation(BsonType.Int32)]
     public int Id { get; set; }
