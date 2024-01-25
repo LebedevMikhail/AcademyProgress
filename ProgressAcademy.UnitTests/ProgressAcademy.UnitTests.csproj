@@ -6,4 +6,16 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\ProgressAcademy.Domain\ProgressAcademy.Domain.csproj" />
+      <ProjectReference Include="..\ProgressAcademy.Handlers\ProgressAcademy.Handlers.csproj" />
+      <ProjectReference Include="..\ProgressAcademy.Infrastructure\ProgressAcademy.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MongoDB.Driver" Version="2.23.1" />
+      <PackageReference Include="moq" Version="4.20.70" />
+      <PackageReference Include="mstest" Version="3.1.1" />
+    </ItemGroup>
+
 </Project>
