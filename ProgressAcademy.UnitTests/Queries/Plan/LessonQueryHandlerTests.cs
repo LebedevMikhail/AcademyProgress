@@ -100,10 +100,7 @@ public class LessonQueryHandlerTests
         // Arrange
         var mockRepository = new Mock<ILessonRepository>();
         var lessonId = 1;
-        var query = new GetLessonByIdQuery
-        {
-            LessonId = lessonId
-        };
+        GetLessonByIdQuery query = null;
 
         mockRepository.Setup(repo => repo.GetLessonById(lessonId)).Returns((Lesson)null);
 
@@ -137,13 +134,13 @@ public class LessonQueryHandlerTests
     {
         // Arrange
         var mockRepository = new Mock<ILessonRepository>();
-        var query = new GetAllLessonsQuery();
+        GetAllLessonsQuery query = null;
         var expectedLessons = new List<Lesson>();
         mockRepository.Setup(repo => repo.GetAllLessons()).Returns(expectedLessons);
 
         var queryHandler = new LessonQueryHandler(mockRepository.Object);
 
         // Act and Assert
-        Assert.ThrowsException<Exception>(() => queryHandler.Handle(query));
+        Assert.ThrowsException<ArgumentNullException>(() => queryHandler.Handle(query));
     }
 }
