@@ -16,11 +16,19 @@ public class LessonQueryHandler
 
     public Lesson Handle(GetLessonByIdQuery query)
     {
+        if(query == null || query.LessonId == 0)
+        {
+            throw new ArgumentNullException($"GetLessonByIdQuery must not be null or the LessonID value is zero ");
+        }
         return  _lessonRepository.GetLessonById(query.LessonId);
     }
 
     public IEnumerable<Lesson> Handle(GetAllLessonsQuery query)
     {
+        if(query == null )
+        {
+            throw new ArgumentNullException($"GetAllLessonsQuery must not be null");
+        }
         return _lessonRepository.GetAllLessons();
     }
 }

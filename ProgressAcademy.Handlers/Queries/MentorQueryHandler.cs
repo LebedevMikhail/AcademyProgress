@@ -16,11 +16,19 @@ public class MentorQueryHandler
 
     public Mentor Handle(GetMentorByIdQuery query)
     {
+        if(query == null || query.MentorId == 0)
+        {
+            throw new ArgumentNullException($"GetMentorByIdQuery must not be null or the MentorId value is zero ");
+        }
         return  _mentorRepository.GetMentorById(query.MentorId);
     }
 
     public IEnumerable<Mentor> Handle(GetAllMentorsQuery query)
     {
+        if(query == null )
+        {
+            throw new ArgumentNullException($"GetAllMentorsQuery must not be null");
+        }
         return _mentorRepository.GetAllMentors();
     }
 }

@@ -1,6 +1,7 @@
 using MongoDB.Driver;
 
 namespace ProgressAcademy.Data.Config;
+
 public class MongoDbConfig 
 {
         private readonly IMongoDatabase _database;
@@ -12,4 +13,4 @@ public class MongoDbConfig
         }
 
         public IMongoDatabase Database => _database;
-    }
+}

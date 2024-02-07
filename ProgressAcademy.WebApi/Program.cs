@@ -19,8 +19,17 @@ builder.Services.AddSingleton<IMongoDatabase>(provider =>
     return mongoClient.GetDatabase("test");
 });
 builder.Services.AddTransient<IPlanRepository, PlanRepository>();
+builder.Services.AddTransient<ILessonRepository, LessonRepository>();
+builder.Services.AddTransient<IMentorRepository, MentorRepository>();
+
 builder.Services.AddTransient<PlanQueryHandler>();
+builder.Services.AddTransient<LessonQueryHandler>();
+builder.Services.AddTransient<MentorQueryHandler>();
+
 builder.Services.AddTransient<PlanCommandHandler>();
+builder.Services.AddTransient<LessonCommandHandler>();
+builder.Services.AddTransient<MentorCommandHandler>();
+
 
 var app = builder.Build();
 

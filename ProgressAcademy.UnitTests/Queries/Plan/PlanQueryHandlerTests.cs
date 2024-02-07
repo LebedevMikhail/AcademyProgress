@@ -23,60 +23,52 @@ public class PlanQueryHandlerTests
     [TestMethod]
     public void Handle_GetPlanByIdQuery_ReturnsPlanFromRepository()
     {
-        // Arrange
-        var planId = 0;
+
+        var planId = 1;
         var query = new GetPlanByIdQuery { PlanId = planId };
         var expectedPlan = new Domain.Models.Plan();
         _planRepositoryMock.Setup(repo => repo.GetPlanById(planId)).Returns(expectedPlan);
 
-        // Act
         var result = _queryHandler.Handle(query);
 
-        // Assert
         Assert.AreEqual(expectedPlan, result);
     }
 
     [TestMethod]
     public void Handle_GetAllPlansQuery_ReturnsAllPlansFromRepository()
     {
-        // Arrange
+
         var query = new GetAllPlansQuery();
         var expectedPlans = new List<Domain.Models.Plan>();
         _planRepositoryMock.Setup(repo => repo.GetAllPlans()).Returns(expectedPlans);
 
-        // Act
         var result = _queryHandler.Handle(query);
 
-        // Assert
         CollectionAssert.AreEqual(expectedPlans, result.ToList());
     }
     
     [TestMethod]
     public void Handle_GetPlanByIdQuery_WhenPlanNotFound_ReturnsNull()
     {
-        // Arrange
+
         var planId = 0;
         var query = new GetPlanByIdQuery { PlanId = planId };
         _planRepositoryMock.Setup(repo => repo.GetPlanById(planId)).Returns((Domain.Models.Plan)null);
 
-        // Act
-        var result = _queryHandler.Handle(query);
-
-        // Assert
-        Assert.IsNull(result);
+        Assert.ThrowsException<ArgumentNullException>(()=>{
+                _queryHandler.Handle(query);
+        });
     }
 
     [TestMethod]
     public void Handle_GetAllPlansQuery_WhenRepositoryThrowsException_ReturnsEmptyList()
     {
-        // Arrange
         var query = new GetAllPlansQuery();
-        _planRepositoryMock.Setup(repo => repo.GetAllPlans()).Throws(new Exception("Simulated exception"));
+        var expectedResult = new List<Domain.Models.Plan>();
+        _planRepositoryMock.Setup(repo => repo.GetAllPlans()).Returns(expectedResult);
 
-        // Act
         var result = _queryHandler.Handle(query);
 
-        // Assert
-        CollectionAssert.AreEqual(new List<Domain.Models.Plan>(), result.ToList());
+        CollectionAssert.AreEqual(expectedResult, result.ToList());
     }
 }

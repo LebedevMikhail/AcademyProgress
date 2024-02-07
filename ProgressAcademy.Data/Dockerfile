@@ -7,4 +7,6 @@ COPY scripts/create_collection.js /docker-entry-point-initdb.d/
 # Expose the MongoDB portв
 EXPOSE 27017
 
+# run chmod+X
+
 CMD ["mongod", "--bind_ip_all", "--port", "27017"]
