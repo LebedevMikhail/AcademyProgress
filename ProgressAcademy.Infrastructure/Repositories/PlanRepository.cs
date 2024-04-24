@@ -4,41 +4,53 @@ using ProgressAcademy.Domain.Repositories;
 
 namespace ProgressAcademy.Infrastructure.Repositories;
 
+/// <summary>
+/// Repository for handling CRUD operations related to plans using MongoDB.
+/// </summary>
 public class PlanRepository : IPlanRepository
 {
     private readonly IMongoCollection<Plan> _planCollection;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PlanRepository"/> class.
+    /// </summary>
+    /// <param name="database">MongoDB database instance.</param>
     public PlanRepository(IMongoDatabase database)
     {
         _planCollection = database.GetCollection<Plan>("plans");
     }
 
-    public List<Plan> GetAllPlans()
+    /// <inheritdoc/>
+    public async Task<IEnumerable<Plan>> GetAllPlansAsync(CancellationToken cancellationToken)
     {
-        return _planCollection.Find(_ => true).ToList();
+        return await _planCollection.Find(_ => true).ToListAsync(cancellationToken);
     }
 
-    public Plan GetPlanById(int planId)
+    /// <inheritdoc/>
+    public async Task<Plan> GetPlanByIdAsync(int planId, CancellationToken cancellationToken)
     {
-        return _planCollection.Find(plan => plan.Id == planId).FirstOrDefault();
+        return await _planCollection.Find(plan => plan.Id == planId).FirstOrDefaultAsync(cancellationToken);
     }
 
-    public void CreatePlan(Plan plan)
+    /// <inheritdoc/>
+    public async Task CreatePlanAsync(Plan plan, CancellationToken cancellationToken)
     {
-        _planCollection.InsertOne(plan);
+        await _planCollection.InsertOneAsync(plan);
     }
 
-    public void UpdatePlan(Plan plan)
+    /// <inheritdoc/>
+    public async Task UpdatePlanAsync(Plan plan, CancellationToken cancellationToken)
     {
         FilterDefinition<Plan> filter = Builders<Plan>.Filter.Eq("_id", plan.Id);
         UpdateDefinition<Plan> update = Builders<Plan>.Update
             .Set("Title", plan.Title);
-        _planCollection.UpdateOne(filter, update);
+        await _planCollection.UpdateOneAsync(filter, update, cancellationToken:cancellationToken);
     }
 
-    public void DeletePlan(int planId)
+    /// <inheritdoc/>
+    public async Task DeletePlanAsync(int planId, CancellationToken cancellationToken)
     {
         FilterDefinition<Plan> filter = Builders<Plan>.Filter.Eq("_id", planId);
-        _planCollection.DeleteOne(filter);
+       await _planCollection.DeleteOneAsync(filter, cancellationToken);
     }
 }

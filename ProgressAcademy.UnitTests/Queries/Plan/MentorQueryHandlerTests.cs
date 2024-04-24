@@ -10,7 +10,7 @@ namespace ProgressAcademy.UnitTests.Queries.Plan;
 public class MentorQueryHandlerTests
 {
     [TestMethod]
-    public void Handle_GetMentorById_ShouldReturnNull_WhenMentorNotFound()
+    public async Task Handle_GetMentorById_ShouldReturnNull_WhenMentorNotFound()
     {
         // Arrange
         var mockRepository = new Mock<IMentorRepository>();
@@ -20,33 +20,29 @@ public class MentorQueryHandlerTests
             MentorId = mentorId
         };
 
-        mockRepository.Setup(repo => repo.GetMentorById(mentorId)).Returns((Domain.Models.Mentor)null);
+        var cancellationTokenSource = new CancellationTokenSource();
+        Domain.Models.Mentor mentor = null;
+        mockRepository.Setup(repo => repo.GetMentorByIdAsync(mentorId, cancellationTokenSource.Token)).ReturnsAsync(mentor);
 
         var queryHandler = new MentorQueryHandler(mockRepository.Object);
 
-// Act
-        var result = queryHandler.Handle(query);
-
-// Assert
-        Assert.IsNull(result);
-           
+        var result = await queryHandler.Handle(query, cancellationTokenSource.Token);
+        
+        Assert.IsNull(result);           
     }
 
     [TestMethod]
-    public void Handle_GetAllMentors_ShouldReturnEmptyList_WhenNoMentorsFound()
+    public async Task Handle_GetAllMentors_ShouldReturnEmptyList_WhenNoMentorsFound()
     {
-        // Arrange
         var mockRepository = new Mock<IMentorRepository>();
         var query = new GetAllMentorsQuery();
-
-        mockRepository.Setup(repo => repo.GetAllMentors()).Returns(new List<Domain.Models.Mentor>());
+        var cancellationTokenSource = new CancellationTokenSource();
+        mockRepository.Setup(repo => repo.GetAllMentorsAsync(cancellationTokenSource.Token)).ReturnsAsync(new List<Domain.Models.Mentor>());
 
         var queryHandler = new MentorQueryHandler(mockRepository.Object);
 
-// Act
-        var result = queryHandler.Handle(query);
+        var result = await queryHandler.Handle(query, cancellationTokenSource.Token);
 
-// Assert
         Assert.IsNotNull(result);
         CollectionAssert.AreEqual(new List<Domain.Models.Mentor>(), result.ToList());
     }

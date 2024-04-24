@@ -1,6 +1,15 @@
-namespace ProgressAcademy.Application.Commands.Mentor;
+using MediatR;
 
-public class DeleteMentorCommand
+namespace ProgressAcademy.Application.Commands.Mentor
 {
-    public int MentorId { get; set; }
+    /// <summary>
+    /// Command for deleting a mentor.
+    /// </summary>
+    public class DeleteMentorCommand : IRequest
+    {
+        /// <summary>
+        /// Gets or sets the ID of the mentor to be deleted.
+        /// </summary>
+        public int MentorId { get; set; }
+    }
 }

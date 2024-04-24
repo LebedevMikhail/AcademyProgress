@@ -1,74 +1,114 @@
 using ProgressAcademy.Application.Commands.Mentor;
 using ProgressAcademy.Application.Queries.Mentor;
 using ProgressAcademy.Domain.Models;
-using ProgressAcademy.Handlers.Commands;
-using ProgressAcademy.Handlers.Queries;
 using Microsoft.AspNetCore.Mvc;
+using MediatR;
 
 namespace ProgressAcademy.WebApi.Controllers;
 
+/// <summary>
+/// The MentorController class handles HTTP requests related to mentor operations, 
+/// including retrieving, creating, updating, and deleting mentors.
+/// It utilizes the MediatR library to delegate the execution of these operations to the appropriate handlers.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class MentorController : ControllerBase
 {
-   private readonly MentorQueryHandler _mentorQueryHandler;
-   private readonly MentorCommandHandler _mentorCommandHandler;
-   
-   public MentorController(MentorQueryHandler mentorQueryHandler, MentorCommandHandler mentorCommandHandler)
+    private readonly IMediator _mediator;
+
+    /// <summary>
+    /// Constructs a new instance of the MentorController with a specified IMediator instance.
+    /// </summary>
+    /// <param name="mediator">The MediatR IMediator instance used for dispatching commands and queries.</param>
+    public MentorController(IMediator mediator)
     {
-        _mentorQueryHandler = mentorQueryHandler;
-        _mentorCommandHandler = mentorCommandHandler;
+        _mediator = mediator;
     }
 
+    /// <summary>
+    /// Retrieves a list of all mentors.
+    /// </summary>
+    /// <returns>A list of mentor entities.</returns>
     [HttpGet("GetAllMentors")]
-    public IActionResult GetAllMentors()
+    [ProducesResponseType(typeof(IEnumerable<Mentor>), 200)]
+    public async Task<IActionResult> GetAllMentors()
     {
         var query = new GetAllMentorsQuery();
-        var result = _mentorQueryHandler.Handle(query);
+        var result = await _mediator.Send(query);
         return Ok(result);
     }
-    
+
+    /// <summary>
+    /// Retrieves a specific mentor by their unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the mentor to retrieve.</param>
+    /// <returns>The mentor entity associated with the specified ID.</returns>
     [HttpGet("GetMentorById")]
-    public IActionResult GetMentorById(int id)
+    [ProducesResponseType(typeof(Mentor), 200)]
+
+    public async Task<IActionResult> GetMentorById(int id)
     {
+        var cancellationTokenSource = new CancellationTokenSource();
         var query = new GetMentorByIdQuery()
         {
             MentorId = id
         };
-        var result = _mentorQueryHandler.Handle(query);
+        var result = await _mediator.Send(query, cancellationTokenSource.Token);
         return Ok(result);
     }
-    
+
+    /// <summary>
+    /// Creates a new mentor with the provided mentor details.
+    /// </summary>
+    /// <param name="mentor">The mentor entity to create.</param>
+    /// <returns>A status indicating the outcome of the create operation.</returns>
     [HttpPost]
-    public IActionResult CreateMentor([FromBody]Mentor mentor)
+    [ProducesResponseType(200)]
+    public async Task<IActionResult> CreateMentor([FromBody] Mentor mentor)
     {
+        var cancellationTokenSource = new CancellationTokenSource();
         var command = new CreateMentorCommand()
         {
             Mentor = mentor
         };
-        _mentorCommandHandler.Handle(command);
+        await _mediator.Send(command, cancellationTokenSource.Token);
         return Ok();
     }
-    
+
+    /// <summary>
+    /// Updates an existing mentor with the provided details.
+    /// </summary>
+    /// <param name="mentor">The updated mentor entity.</param>
+    /// <returns>A status indicating the outcome of the update operation.</returns>
     [HttpPut]
-    public IActionResult UpdateMentor([FromBody]Mentor mentor)
+    [ProducesResponseType(200)]
+    public async Task<IActionResult> UpdateMentor([FromBody] Mentor mentor)
     {
+        var cancellationTokenSource = new CancellationTokenSource();
         var command = new UpdateMentorCommand()
         {
             Mentor = mentor
         };
-        _mentorCommandHandler.Handle(command);
+        await _mediator.Send(command, cancellationTokenSource.Token);
         return Ok();
     }
-    
+
+    /// <summary>
+    /// Deletes a mentor by their unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the mentor to delete.</param>
+    /// <returns>A status indicating the outcome of the delete operation.</returns>
     [HttpDelete]
-    public IActionResult DeleteMentor([FromBody] int id)
+    [ProducesResponseType(200)]
+    public async Task<IActionResult> DeleteMentor([FromBody] int id)
     {
+        var cancellationTokenSource = new CancellationTokenSource();
         var command = new DeleteMentorCommand()
         {
             MentorId = id
         };
-        _mentorCommandHandler.Handle(command);
+        await _mediator.Send(command, cancellationTokenSource.Token);
         return Ok();
     }
 }

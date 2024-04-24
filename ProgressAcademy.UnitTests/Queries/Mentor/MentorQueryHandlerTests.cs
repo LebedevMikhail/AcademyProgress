@@ -10,7 +10,7 @@ namespace ProgressAcademy.UnitTests.Queries.Mentor;
 public class MentorQueryHandlerTests
 {
     [TestMethod]
-    public void Handle_GetMentorById_ShouldReturnMentor()
+    public async Task Handle_GetMentorById_ShouldReturnMentor()
     {
         
         var mockRepository = new Mock<IMentorRepository>();
@@ -20,12 +20,12 @@ public class MentorQueryHandlerTests
             MentorId = mentorId
         };
         var expectedMentor = new Domain.Models.Mentor { Id = mentorId, FullName = "Test Mentor" };
-        
-        mockRepository.Setup(repo => repo.GetMentorById(mentorId)).Returns(expectedMentor);
+        var cancellationTokenSource = new CancellationTokenSource();
+        mockRepository.Setup(repo => repo.GetMentorByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(expectedMentor);
 
         var queryHandler = new MentorQueryHandler(mockRepository.Object);
 
-                var result = queryHandler.Handle(query);
+        var result = await queryHandler.Handle(query, cancellationTokenSource.Token);
 
         
         Assert.IsNotNull(result);
@@ -33,29 +33,30 @@ public class MentorQueryHandlerTests
     }
 
     [TestMethod]
-    public void Handle_GetAllMentors_ShouldReturnListOfMentors()
+    public async Task Handle_GetAllMentors_ShouldReturnListOfMentors()
     {
         
         var mockRepository = new Mock<IMentorRepository>();
         var query = new GetAllMentorsQuery();
         var expectedMentors = new List<Domain.Models.Mentor>
         {
-            new Domain.Models.Mentor { Id = 1, FullName = "Mentor 1" },
-            new Domain.Models.Mentor { Id = 2, FullName = "Mentor 2" },
-            new Domain.Models.Mentor { Id = 3, FullName = "Mentor 3" }
+            new() { Id = 1, FullName = "Mentor 1" },
+            new() { Id = 2, FullName = "Mentor 2" },
+            new() { Id = 3, FullName = "Mentor 3" }
         };
-        
-        mockRepository.Setup(repo => repo.GetAllMentors()).Returns(expectedMentors);
+        var cancellationTokenSource = new CancellationTokenSource();
+        mockRepository.Setup(repo => repo.GetAllMentorsAsync(It.IsAny<CancellationToken>())).ReturnsAsync(expectedMentors);
 
         var queryHandler = new MentorQueryHandler(mockRepository.Object);
         
-        var result = queryHandler.Handle(query);
+        var result = await queryHandler.Handle(query, cancellationTokenSource.Token);
         
         Assert.IsNotNull(result);
         CollectionAssert.AreEqual(expectedMentors, result.ToList());
     }
+
     [TestMethod]
-    public void Handle_GetMentorById_ShouldReturnNull_WhenMentorNotFound()
+    public async Task Handle_GetMentorById_ShouldReturnNull_WhenMentorNotFound()
     {
         var mockRepository = new Mock<IMentorRepository>();
         var mentorId = 1;
@@ -63,23 +64,26 @@ public class MentorQueryHandlerTests
         {
             MentorId = mentorId
         };
-        mockRepository.Setup(repo => repo.GetMentorById(mentorId)).Returns((Domain.Models.Mentor)null);
+        var cancellationTokenSource = new CancellationTokenSource();
+        Domain.Models.Mentor mentor = null;
+        mockRepository.Setup(repo => repo.GetMentorByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(mentor);
         var queryHandler = new MentorQueryHandler(mockRepository.Object);
         
-        var result = queryHandler.Handle(query);
+        var result = await queryHandler.Handle(query, cancellationTokenSource.Token);
 
         Assert.IsNull(result);
     }
 
     [TestMethod]
-    public void Handle_GetAllMentors_ShouldReturnEmptyList_WhenNoMentorsFound()
+    public async Task Handle_GetAllMentors_ShouldReturnEmptyList_WhenNoMentorsFound()
     {
         var mockRepository = new Mock<IMentorRepository>();
         var query = new GetAllMentorsQuery();
-        mockRepository.Setup(repo => repo.GetAllMentors()).Returns(new List<Domain.Models.Mentor>());
+        var cancellationTokenSource = new CancellationTokenSource();
+        mockRepository.Setup(repo => repo.GetAllMentorsAsync(It.IsAny<CancellationToken>())).ReturnsAsync(new List<Domain.Models.Mentor>());
         var queryHandler = new MentorQueryHandler(mockRepository.Object);
 
-        var result = queryHandler.Handle(query);
+        var result = await queryHandler.Handle(query, cancellationTokenSource.Token);
 
         Assert.IsNotNull(result);
         CollectionAssert.AreEqual(new List<Domain.Models.Mentor>(), result.ToList());

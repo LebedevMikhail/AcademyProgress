@@ -4,41 +4,53 @@ using ProgressAcademy.Domain.Repositories;
 
 namespace ProgressAcademy.Infrastructure.Repositories;
 
+/// <summary>
+/// Repository for handling CRUD operations related to mentors using MongoDB.
+/// </summary>
 public class MentorRepository : IMentorRepository
 {
     private readonly IMongoCollection<Mentor> _mentorCollection;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MentorRepository"/> class.
+    /// </summary>
+    /// <param name="database">MongoDB database instance.</param>
     public MentorRepository(IMongoDatabase database)
     {
         _mentorCollection = database.GetCollection<Mentor>("mentors");
     }
 
-    public List<Mentor> GetAllMentors()
+    /// <inheritdoc/>
+    public async Task<IEnumerable<Mentor>> GetAllMentorsAsync(CancellationToken cancellationToken)
     {
-        return _mentorCollection.Find(_ => true).ToList();
+        return await _mentorCollection.Find(_ => true).ToListAsync(cancellationToken);
     }
 
-    public Mentor GetMentorById(int mentorId)
+    /// <inheritdoc/>
+    public async Task<Mentor> GetMentorByIdAsync(int mentorId, CancellationToken cancellationToken)
     {
-        return _mentorCollection.Find(mentor => mentor.Id == mentorId).FirstOrDefault();
+        return await _mentorCollection.Find(mentor => mentor.Id == mentorId).FirstOrDefaultAsync(cancellationToken);
     }
 
-    public void CreateMentor(Mentor mentor)
+    /// <inheritdoc/>
+    public async Task CreateMentorAsync(Mentor mentor, CancellationToken cancellationToken)
     {
-        _mentorCollection.InsertOne(mentor);
+        await _mentorCollection.InsertOneAsync(mentor, cancellationToken);
     }
 
-    public void UpdateMentor(Mentor mentor)
+    /// <inheritdoc/>
+    public async Task UpdateMentorAsync(Mentor mentor, CancellationToken cancellationToken)
     {
         FilterDefinition<Mentor> filter = Builders<Mentor>.Filter.Eq("_id", mentor.Id);
         UpdateDefinition<Mentor> update = Builders<Mentor>.Update
             .Set("Title", mentor.FullName);
-        _mentorCollection.UpdateOne(filter, update);
+        await _mentorCollection.UpdateOneAsync(filter, update, cancellationToken: cancellationToken);
     }
 
-    public void DeleteMentor(int mentorId)
+    /// <inheritdoc/>
+    public async Task DeleteMentorAsync(int mentorId, CancellationToken cancellationToken)
     {
         FilterDefinition<Mentor> filter = Builders<Mentor>.Filter.Eq("_id", mentorId);
-        _mentorCollection.DeleteOne(filter);
+        await _mentorCollection.DeleteOneAsync(filter, cancellationToken);
     }
 }

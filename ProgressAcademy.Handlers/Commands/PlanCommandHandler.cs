@@ -1,44 +1,71 @@
+using System.Runtime.CompilerServices;
+using MediatR;
 using ProgressAcademy.Application.Commands.Plan;
 using ProgressAcademy.Domain.Repositories;
 
 namespace ProgressAcademy.Handlers.Commands;
 
-public class PlanCommandHandler
+/// <summary>
+/// Handles command operations for "Plan" entities, such as creation, update, and deletion.
+/// </summary>
+public class PlanCommandHandler :
+        IRequestHandler<CreatePlanCommand>,
+        IRequestHandler<UpdatePlanCommand>,
+        IRequestHandler<DeletePlanCommand>
 {
     private readonly IPlanRepository _planRepository;
 
+    /// <summary>
+    /// Initializes a new instance of the PlanCommandHandler with an IPlanRepository.
+    /// </summary>
+    /// <param name="planRepository">The repository responsible for executing operations related to "Plan" entities.</param>
     public PlanCommandHandler(IPlanRepository planRepository)
     {
         _planRepository = planRepository;
     }
 
-    public void Handle(CreatePlanCommand command)
+    /// <summary>
+    /// Handles the creation of a new "Plan".
+    /// Validates the command input before proceeding with the creation operation.
+    /// </summary>
+    /// <param name="command">The command containing the "Plan" data to be created.</param>
+    public async Task Handle(CreatePlanCommand command, CancellationToken cancellationToken)
     {
         if(command?.Plan == null)
         {
             throw new ArgumentNullException($"CreatePlanCommand must not be null");
         }
 
-        _planRepository.CreatePlan(command.Plan);
+     await _planRepository.CreatePlanAsync(command.Plan, cancellationToken);
     }
 
-    public void Handle(UpdatePlanCommand command)
+    /// <summary>
+    /// Handles the updating of an existing "Plan".
+    /// Ensures the command input is valid before applying the update.
+    /// </summary>
+    /// <param name="command">The command containing the updated "Plan" data.</param>
+    public async Task Handle(UpdatePlanCommand command, CancellationToken cancellationToken)
     {
         if(command?.Plan == null)
         {
             throw new ArgumentNullException($"UpdatePlanCommand must not be null");
         }
 
-        _planRepository.UpdatePlan(command.Plan);
+       await _planRepository.UpdatePlanAsync(command.Plan, cancellationToken);
     }
 
-    public void Handle(DeletePlanCommand command)
+    /// <summary>
+    /// Handles the deletion of a "Plan" based on its unique identifier.
+    /// Validates that the command and PlanId are valid before proceeding with the deletion.
+    /// </summary>
+    /// <param name="command">The command indicating which "Plan" to delete.</param>
+    public async Task Handle(DeletePlanCommand command, CancellationToken cancellationToken)
     {
         if(command == null || command.PlanId == 0 )
         {
             throw new ArgumentNullException($"DeletePlanCommand must not be null or PlanId must not be zero");
         }
 
-        _planRepository.DeletePlan(command.PlanId);
+       await _planRepository.DeletePlanAsync(command.PlanId, cancellationToken);
     }
 }

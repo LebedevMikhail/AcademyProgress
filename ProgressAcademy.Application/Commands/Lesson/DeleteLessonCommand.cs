@@ -1,6 +1,15 @@
-namespace ProgressAcademy.Application.Commands.Lesson;
+using MediatR;
 
-public class DeleteLessonCommand
+namespace ProgressAcademy.Application.Commands.Lesson
 {
-    public int LessonId { get; set; }
+    /// <summary>
+    /// Command for deleting a lesson.
+    /// </summary>
+    public class DeleteLessonCommand : IRequest
+    {
+        /// <summary>
+        /// Gets or sets the ID of the lesson to be deleted.
+        /// </summary>
+        public int LessonId { get; set; }
+    }
 }

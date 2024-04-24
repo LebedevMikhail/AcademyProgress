@@ -1,6 +1,15 @@
-namespace ProgressAcademy.Application.Commands.Plan;
+using MediatR;
 
-public class DeletePlanCommand
+namespace ProgressAcademy.Application.Commands.Plan
 {
-    public int PlanId { get; set; }
+    /// <summary>
+    /// Command for deleting a plan.
+    /// </summary>
+    public class DeletePlanCommand : IRequest
+    {
+        /// <summary>
+        /// Gets or sets the ID of the plan to be deleted.
+        /// </summary>
+        public int PlanId { get; set; }
+    }
 }

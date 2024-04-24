@@ -1,12 +1,28 @@
-﻿# Use the official MongoDB image
-FROM mongo:latest
+﻿FROM mongo:latest
 
-# Copy the scripts into the container
-COPY scripts/create_collection.js /docker-entry-point-initdb.d/
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 
-# Expose the MongoDB portв
+WORKDIR /src
+
+COPY ["ProgressAcademy.Data.csproj", "ProgressAcademy/"]
+RUN dotnet restore "ProgressAcademy.Data.csproj"
+
+COPY . .
+WORKDIR "/src/ProgressAcademy.Data"
+RUN dotnet build "src/ProgressAcademy.Data/ProgressAcademy.Data.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "src/ProgressAcademy.Data/ProgressAcademy.Data.csproj" -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+
+EXPOSE 80
+EXPOSE 443
+
 EXPOSE 27017
 
-# run chmod+X
-
 CMD ["mongod", "--bind_ip_all", "--port", "27017"]
+
+ENTRYPOINT ["dotnet", "ProgressAcademy.Data.dll"]

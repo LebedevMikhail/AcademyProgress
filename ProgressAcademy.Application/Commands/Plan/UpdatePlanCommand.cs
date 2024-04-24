@@ -1,6 +1,15 @@
-namespace ProgressAcademy.Application.Commands.Plan;
+using MediatR;
 
-public class UpdatePlanCommand
+namespace ProgressAcademy.Application.Commands.Plan
 {
-    public Domain.Models.Plan Plan { get; set; }
+    /// <summary>
+    /// Command for updating a plan.
+    /// </summary>
+    public class UpdatePlanCommand : IRequest
+    {
+        /// <summary>
+        /// Gets or sets the plan model with updated information.
+        /// </summary>
+        public Domain.Models.Plan? Plan { get; set; }
+    }
 }

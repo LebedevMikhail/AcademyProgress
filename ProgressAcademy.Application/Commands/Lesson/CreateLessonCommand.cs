@@ -1,6 +1,15 @@
-namespace ProgressAcademy.Application.Commands.Lesson;
+using MediatR;
 
-public class CreateLessonCommand
+namespace ProgressAcademy.Application.Commands.Lesson
 {
-    public Domain.Models.Lesson Lesson { get; set; }
+    /// <summary>
+    /// Command for creating a new lesson.
+    /// </summary>
+    public class CreateLessonCommand : IRequest
+    {
+        /// <summary>
+        /// Gets or sets the lesson model that will be created.
+        /// </summary>
+        public Domain.Models.Lesson? Lesson { get; set; }
+    }
 }

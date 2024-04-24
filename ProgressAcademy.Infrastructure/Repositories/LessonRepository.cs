@@ -4,41 +4,57 @@ using ProgressAcademy.Domain.Repositories;
 
 namespace ProgressAcademy.Infrastructure.Repositories;
 
+/// <summary>
+/// Repository for handling CRUD operations related to lessons using MongoDB.
+/// </summary>
 public class LessonRepository : ILessonRepository
 {
     private readonly IMongoCollection<Lesson> _lessonCollection;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LessonRepository"/> class.
+    /// </summary>
+    /// <param name="database">MongoDB database instance.</param>
     public LessonRepository(IMongoDatabase database)
     {
         _lessonCollection = database.GetCollection<Lesson>("lessons");
     }
 
-    public List<Lesson> GetAllLessons()
+    /// <inheritdoc/>
+    public async Task<IEnumerable<Lesson>> GetAllLessonsAsync(CancellationToken cancellationToken)
     {
-        return _lessonCollection.Find(_ => true).ToList();
+        return await _lessonCollection.Find(_ => true).ToListAsync(cancellationToken);
     }
 
-    public Lesson GetLessonById(int lessonId)
+    /// <inheritdoc/>
+    public async Task<Lesson> GetLessonByIdAsync(int lessonId, CancellationToken cancellationToken)
     {
-        return _lessonCollection.Find(lesson => lesson.Id == lessonId).FirstOrDefault();
+        return await _lessonCollection.Find(lesson => lesson.Id == lessonId).FirstOrDefaultAsync(cancellationToken);
     }
 
-    public void CreateLesson(Lesson lesson)
+    /// <inheritdoc/>
+    public async Task CreateLessonAsync(Lesson lesson, CancellationToken cancellationToken)
     {
-        _lessonCollection.InsertOne(lesson);
+        var options = new InsertOneOptions
+        {
+            BypassDocumentValidation = true
+        };
+        await _lessonCollection.InsertOneAsync(lesson, options, cancellationToken);
     }
 
-    public void UpdateLesson(Lesson lesson)
+    /// <inheritdoc/>
+    public async Task UpdateLessonAsync(Lesson lesson, CancellationToken cancellationToken)
     {
         FilterDefinition<Lesson> filter = Builders<Lesson>.Filter.Eq("_id", lesson.Id);
         UpdateDefinition<Lesson> update = Builders<Lesson>.Update
             .Set("Title", lesson.Title);
-        _lessonCollection.UpdateOne(filter, update);
+        await _lessonCollection.UpdateOneAsync(filter, update, cancellationToken: cancellationToken);
     }
 
-    public void DeleteLesson(int lessonId)
+    /// <inheritdoc/>
+    public async Task DeleteLessonAsync(int lessonId, CancellationToken cancellationToken)
     {
         FilterDefinition<Lesson> filter = Builders<Lesson>.Filter.Eq("_id", lessonId);
-        _lessonCollection.DeleteOne(filter);
+        await _lessonCollection.DeleteOneAsync(filter, cancellationToken);
     }
 }

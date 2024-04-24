@@ -1,76 +1,86 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using ProgressAcademy.Application.Commands.Plan;
-using ProgressAcademy.Domain.Models;
 using ProgressAcademy.Domain.Repositories;
 using ProgressAcademy.Handlers.Commands;
 
-[TestClass]
-public class PlanCommandHandlerTests
+namespace ProgressAcademy.UnitTests.Commands.Plan
 {
-    private IPlanRepository _planRepository;
-    private PlanCommandHandler _handler;
-
-    [TestInitialize]
-    public void TestInitialize()
+    [TestClass]
+    public class PlanCommandHandlerTests
     {
-        _planRepository = Mock.Of<IPlanRepository>();
-        _handler = new PlanCommandHandler(_planRepository);
-    }
+        private Mock<IPlanRepository>? _planRepository;
+        private PlanCommandHandler? _handler;
 
-    [TestMethod]
-    public void Handle_CreatePlanCommand_WithNullPlan_ThrowsArgumentNullException()
-    {
-        var createPlanCommand = new CreatePlanCommand { Plan = null };
+        [TestMethod]
+        public async Task Handle_CreatePlanCommand_WithNullPlan_ThrowsArgumentNullException()
+        {
+            _planRepository = new Mock<IPlanRepository>();
+            _handler = new PlanCommandHandler(_planRepository.Object);
 
-        Assert.ThrowsException<ArgumentNullException>(() => _handler.Handle(createPlanCommand));
-    }
+            var createPlanCommand = new CreatePlanCommand { Plan = null };
+            var cancellationTokenSource = new CancellationTokenSource();
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await _handler.Handle(createPlanCommand, cancellationTokenSource.Token));
+        }
 
-    [TestMethod]
-    public void Handle_UpdatePlanCommand_WithNullPlan_ThrowsArgumentNullException()
-    {
-        var updatePlanCommand = new UpdatePlanCommand { Plan = null };
+        [TestMethod]
+        public async Task Handle_UpdatePlanCommand_WithNullPlan_ThrowsArgumentNullException()
+        {
+            _planRepository = new Mock<IPlanRepository>();
+            _handler = new PlanCommandHandler(_planRepository.Object);
+            var updatePlanCommand = new UpdatePlanCommand { Plan = null };
+            var cancellationTokenSource = new CancellationTokenSource();
 
-        Assert.ThrowsException<ArgumentNullException>(() => _handler.Handle(updatePlanCommand));
-    }
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await _handler.Handle(updatePlanCommand, cancellationTokenSource.Token));
+        }
 
-    [TestMethod]
-    public void Handle_DeletePlanCommand_WithZeroPlanId_ThrowsArgumentNullException()
-    {
-        var deletePlanCommand = new DeletePlanCommand { PlanId = 0 };
+        [TestMethod]
+        public async Task Handle_DeletePlanCommand_WithZeroPlanId_ThrowsArgumentNullException()
+        {
+            _planRepository = new Mock<IPlanRepository>();
+            _handler = new PlanCommandHandler(_planRepository.Object);
+            var deletePlanCommand = new DeletePlanCommand { PlanId = 0 };
+            var cancellationTokenSource = new CancellationTokenSource();
 
-        Assert.ThrowsException<ArgumentNullException>(() => _handler.Handle(deletePlanCommand));
-    }
-    
-    [TestMethod]
-    public void Handle_CreatePlanCommand_CallsCreatePlanMethodInRepository()
-    {
-        var createPlanCommand = new CreatePlanCommand { Plan = new Plan() };
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await _handler.Handle(deletePlanCommand, cancellationTokenSource.Token));
+        }
 
-        _handler.Handle(createPlanCommand);
+        [TestMethod]
+        public async Task Handle_CreatePlanCommand_CallsCreatePlanMethodInRepository()
+        {
+            _planRepository = new Mock<IPlanRepository>();
+            _handler = new PlanCommandHandler(_planRepository.Object);
+            var createPlanCommand = new CreatePlanCommand { Plan = new Domain.Models.Plan() };
+            var cancellationTokenSource = new CancellationTokenSource();
 
-        Mock.Get(_planRepository).Verify(x => x.CreatePlan(It.IsAny<Plan>()), Times.Once);
-    }
+            await _handler.Handle(createPlanCommand, cancellationTokenSource.Token);
 
-    [TestMethod]
-    public void Handle_UpdatePlanCommand_CallsUpdatePlanMethodInRepository()
-    {
-        var updatePlanCommand = new UpdatePlanCommand { Plan = new Plan() };
+            _planRepository.Verify(x => x.CreatePlanAsync(It.IsAny<Domain.Models.Plan>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
 
-        _handler.Handle(updatePlanCommand);
+        [TestMethod]
+        public async Task Handle_UpdatePlanCommand_CallsUpdatePlanMethodInRepository()
+        {
+            _planRepository = new Mock<IPlanRepository>();
+            _handler = new PlanCommandHandler(_planRepository.Object);
+            var updatePlanCommand = new UpdatePlanCommand { Plan = new Domain.Models.Plan() };
+            var cancellationTokenSource = new CancellationTokenSource();
+            await _handler.Handle(updatePlanCommand, cancellationTokenSource.Token);
 
-        Mock.Get(_planRepository).Verify(x => x.UpdatePlan(It.IsAny<Plan>()), Times.Once);
-    }
+            _planRepository.Verify(x => x.UpdatePlanAsync(It.IsAny<Domain.Models.Plan>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
 
-    [TestMethod]
-    public void Handle_DeletePlanCommand_CallsDeletePlanMethodInRepository()
-    {
-
-        var deletePlanCommand = new DeletePlanCommand { PlanId = 0 };
-
-        Assert.ThrowsException<ArgumentNullException>(()=>
-            {
-                _handler.Handle(deletePlanCommand);
-            });
+        [TestMethod]
+        public async Task Handle_DeletePlanCommand_CallsDeletePlanMethodInRepository()
+        {
+            _planRepository = new Mock<IPlanRepository>();
+            _handler = new PlanCommandHandler(_planRepository.Object);
+            var deletePlanCommand = new DeletePlanCommand { PlanId = 0 };
+            var cancellationTokenSource = new CancellationTokenSource();
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () =>
+                {
+                    await _handler.Handle(deletePlanCommand, cancellationTokenSource.Token);
+                });
+        }
     }
 }
