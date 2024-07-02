@@ -24,14 +24,14 @@ public class PlanController : ControllerBase
     /// <param name="mediator">The MediatR IMediator instance used for handling operations.</param>
     public PlanController(IMediator mediator)
     {
-        _mediator = mediator;
+        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
     /// <summary>
     /// Retrieves all educational plans available.
     /// </summary>
     /// <returns>An action result containing a list of all plans.</returns>
-    [HttpGet("GetAllPlans")]
+    [HttpGet("GetAll")]
     [ProducesResponseType(typeof(IEnumerable<Plan>), 200)]
     public async Task<IActionResult> GetAllPlans()
     {
@@ -46,7 +46,7 @@ public class PlanController : ControllerBase
     /// </summary>
     /// <param name="id">The unique identifier of the plan to retrieve.</param>
     /// <returns>An action result containing the specified plan.</returns>
-    [HttpGet("GetPlanById")]
+    [HttpGet("GetById")]
     [ProducesResponseType(typeof(Plan), 200)]
     public async Task<IActionResult> GetPlanById(int id)
     {
@@ -64,7 +64,7 @@ public class PlanController : ControllerBase
     /// </summary>
     /// <param name="plan">The plan entity to create.</param>
     /// <returns>An action result indicating the outcome of the create operation.</returns>
-    [HttpPost]
+    [HttpPost("Create")]
     [ProducesResponseType(200)]
     public async Task<IActionResult> CreatePlan([FromBody] Plan plan)
     {
@@ -82,7 +82,7 @@ public class PlanController : ControllerBase
     /// </summary>
     /// <param name="plan">The updated plan entity.</param>
     /// <returns>An action result indicating the outcome of the update operation.</returns>
-    [HttpPut]
+    [HttpPut("Update")]
     [ProducesResponseType(200)]
     public async Task<IActionResult> UpdatePlan([FromBody] Plan plan)
     {
@@ -100,7 +100,7 @@ public class PlanController : ControllerBase
     /// </summary>
     /// <param name="id">The unique identifier of the plan to delete.</param>
     /// <returns>An action result indicating the outcome of the delete operation.</returns>
-    [HttpDelete]
+    [HttpDelete("Delete")]
     [ProducesResponseType(200)]
     public async Task<IActionResult> DeletePlan([FromBody] int id)
     {

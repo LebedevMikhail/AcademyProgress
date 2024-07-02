@@ -17,10 +17,13 @@
     <ItemGroup>
       <ProjectReference Include="..\ProgressAcademy.Handlers\ProgressAcademy.Handlers.csproj" />
       <ProjectReference Include="..\ProgressAcademy.Infrastructure\ProgressAcademy.Infrastructure.csproj" />
+      <ProjectReference Include="..\ProgressAcademy.Data\ProgressAcademy.Data.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\ProgressAcademy.Application\ProgressAcademy.Application.csproj" />
+    </ItemGroup>
+    <ItemGroup>
     </ItemGroup>
     
 </Project>

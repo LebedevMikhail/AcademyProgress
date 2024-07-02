@@ -1,6 +1,5 @@
 using MediatR;
 using ProgressAcademy.Application.Commands.Lesson;
-using ProgressAcademy.Domain.Models;
 using ProgressAcademy.Domain.Repositories;
 
 namespace ProgressAcademy.Handlers.Commands;
@@ -9,11 +8,11 @@ namespace ProgressAcademy.Handlers.Commands;
 /// Handles command operations for lessons, including creation, update, and deletion.
 /// It interacts with the lesson repository to persist changes.
 /// </summary>
-public class LessonCommandHandler : 
-        IRequestHandler<CreateLessonCommand>, 
+public class LessonCommandHandler :
+        IRequestHandler<CreateLessonCommand>,
         IRequestHandler<UpdateLessonCommand>,
         IRequestHandler<DeleteLessonCommand>
-        {
+{
     private readonly ILessonRepository _lessonRepository;
 
     /// <summary>
@@ -31,7 +30,7 @@ public class LessonCommandHandler :
     /// <param name="command">The command containing the lesson to be created.</param>
     public async Task Handle(CreateLessonCommand command, CancellationToken cancellationToken)
     {
-        if(command == null)
+        if (command == null)
         {
             throw new ArgumentNullException($"CreateLessonCommand must not be null");
         }
@@ -45,7 +44,7 @@ public class LessonCommandHandler :
     /// <param name="command">The command containing the lesson to be updated.</param>
     public async Task Handle(UpdateLessonCommand command, CancellationToken cancellationToken)
     {
-        if(command == null)
+        if (command == null)
         {
             throw new ArgumentNullException($"UpdateLessonCommand must not be null");
         }
@@ -58,7 +57,7 @@ public class LessonCommandHandler :
     /// <param name="command">The command containing the ID of the lesson to be deleted.</param>
     public async Task Handle(DeleteLessonCommand command, CancellationToken cancellationToken)
     {
-        if(command == null)
+        if (command == null)
         {
             throw new ArgumentNullException($"DeleteLessonCommand must not be null");
         }

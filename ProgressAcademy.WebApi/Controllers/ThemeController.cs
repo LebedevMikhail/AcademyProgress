@@ -28,7 +28,7 @@ namespace ProgressAcademy.WebApi.Controllers
         /// Retrieves all themes.
         /// </summary>
         /// <returns>A list of themes.</returns>
-        [HttpGet("GetAllThemes")]
+        [HttpGet("GetAll")]
         [ProducesResponseType(typeof(IEnumerable<Theme>), 200)]
         public async Task<IActionResult> GetAllThemes()
         {
@@ -43,7 +43,7 @@ namespace ProgressAcademy.WebApi.Controllers
         /// </summary>
         /// <param name="id">The ID of the theme to retrieve.</param>
         /// <returns>The theme with the specified ID.</returns>
-        [HttpGet("GetThemeById")]
+        [HttpGet("GetById")]
         [ProducesResponseType(typeof(Theme), 200)]
         public async Task<IActionResult> GetThemeById(int id)
         {
@@ -58,7 +58,7 @@ namespace ProgressAcademy.WebApi.Controllers
         /// </summary>
         /// <param name="theme">The theme to create.</param>
         /// <returns>An IActionResult indicating the result of the operation.</returns>
-        [HttpPost]
+        [HttpPost("Create")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> CreateTheme([FromBody] Theme theme)
         {
@@ -73,7 +73,7 @@ namespace ProgressAcademy.WebApi.Controllers
         /// </summary>
         /// <param name="theme">The updated theme.</param>
         /// <returns>An IActionResult indicating the result of the operation.</returns>
-        [HttpPut]
+        [HttpPut("Update")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> UpdateTheme([FromBody] Theme theme)
         {
@@ -93,7 +93,7 @@ namespace ProgressAcademy.WebApi.Controllers
         /// </summary>
         /// <param name="id">The ID of the theme to delete.</param>
         /// <returns>An IActionResult indicating the result of the operation.</returns>
-        [HttpDelete]
+        [HttpDelete("Delete")]
         [ProducesResponseType(200)]
 
         public async Task<IActionResult> DeleteTheme(int id)

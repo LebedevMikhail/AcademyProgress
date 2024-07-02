@@ -23,14 +23,14 @@ public class MentorController : ControllerBase
     /// <param name="mediator">The MediatR IMediator instance used for dispatching commands and queries.</param>
     public MentorController(IMediator mediator)
     {
-        _mediator = mediator;
+        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
     /// <summary>
     /// Retrieves a list of all mentors.
     /// </summary>
     /// <returns>A list of mentor entities.</returns>
-    [HttpGet("GetAllMentors")]
+    [HttpGet("GetAll")]
     [ProducesResponseType(typeof(IEnumerable<Mentor>), 200)]
     public async Task<IActionResult> GetAllMentors()
     {
@@ -44,7 +44,7 @@ public class MentorController : ControllerBase
     /// </summary>
     /// <param name="id">The unique identifier of the mentor to retrieve.</param>
     /// <returns>The mentor entity associated with the specified ID.</returns>
-    [HttpGet("GetMentorById")]
+    [HttpGet("GetById")]
     [ProducesResponseType(typeof(Mentor), 200)]
 
     public async Task<IActionResult> GetMentorById(int id)
@@ -63,7 +63,7 @@ public class MentorController : ControllerBase
     /// </summary>
     /// <param name="mentor">The mentor entity to create.</param>
     /// <returns>A status indicating the outcome of the create operation.</returns>
-    [HttpPost]
+    [HttpPost("Create")]
     [ProducesResponseType(200)]
     public async Task<IActionResult> CreateMentor([FromBody] Mentor mentor)
     {
@@ -81,7 +81,7 @@ public class MentorController : ControllerBase
     /// </summary>
     /// <param name="mentor">The updated mentor entity.</param>
     /// <returns>A status indicating the outcome of the update operation.</returns>
-    [HttpPut]
+    [HttpPut("Update")]
     [ProducesResponseType(200)]
     public async Task<IActionResult> UpdateMentor([FromBody] Mentor mentor)
     {
@@ -99,7 +99,7 @@ public class MentorController : ControllerBase
     /// </summary>
     /// <param name="id">The unique identifier of the mentor to delete.</param>
     /// <returns>A status indicating the outcome of the delete operation.</returns>
-    [HttpDelete]
+    [HttpDelete("Delete")]
     [ProducesResponseType(200)]
     public async Task<IActionResult> DeleteMentor([FromBody] int id)
     {

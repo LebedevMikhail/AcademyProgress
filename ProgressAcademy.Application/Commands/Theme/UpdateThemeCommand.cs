@@ -6,7 +6,7 @@ namespace ProgressAcademy.Application.Queries.Theme
     /// <summary>
     /// Command to update an existing theme.
     /// </summary>
-    public class UpdateThemeCommand: IRequest
+    public class UpdateThemeCommand : IRequest
     {
         /// <summary>
         /// The ID of the theme to update.

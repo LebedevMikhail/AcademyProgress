@@ -40,6 +40,4 @@ public class Lesson
     /// Gets or sets the list of themes covered in the lesson. Each theme is simplified to include essential information only.
     /// </summary>
     public List<SimplifiedTheme>? Themes { get; set; }
-
-    //TODO: think about correct answers
 }

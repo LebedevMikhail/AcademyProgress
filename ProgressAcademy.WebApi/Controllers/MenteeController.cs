@@ -11,7 +11,7 @@ namespace ProgressAcademy.WebApi.Controllers;
 /// It uses the MediatR library to send queries and commands for processing.
 /// </summary>
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class MenteeController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -22,7 +22,7 @@ public class MenteeController : ControllerBase
     /// <param name="mediator">An instance of IMediator for sending requests.</param>
     public MenteeController(IMediator mediator)
     {
-        _mediator = mediator;
+        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
     /// <summary>
@@ -30,7 +30,7 @@ public class MenteeController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the mentee to retrieve.</param>
     /// <returns>An ActionResult containing the retrieved Mentee.</returns>
-    [HttpGet("{id}")]
+    [HttpGet("GetById")]
     [ProducesResponseType(200)]
     public async Task<ActionResult<Mentee>> GetMentee(int id)
     {
@@ -44,7 +44,7 @@ public class MenteeController : ControllerBase
     /// Retrieves all mentees.
     /// </summary>
     /// <returns>An ActionResult containing a list of all Mentees.</returns>
-    [HttpGet]
+    [HttpGet("GetAll")]
     [ProducesResponseType(200)]
     public async Task<ActionResult<Mentee>> GetMentees()
     {
@@ -59,7 +59,7 @@ public class MenteeController : ControllerBase
     /// </summary>
     /// <param name="mentee">The Mentee object to create.</param>
     /// <returns>An ActionResult containing the created Mentee.</returns>
-    [HttpPost]
+    [HttpPost("Create")]
     [ProducesResponseType(200)]
 
     public async Task<ActionResult<Mentee>> CreateMentee(Mentee mentee)
@@ -75,7 +75,7 @@ public class MenteeController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the mentee to delete.</param>
     /// <returns>An ActionResult indicating the result of the delete operation.</returns>
-    [HttpDelete("{id}")]
+    [HttpDelete("Delete")]
     [ProducesResponseType(200)]
 
     public async Task<ActionResult<Mentee>> DeleteMentee(int id)
@@ -91,7 +91,7 @@ public class MenteeController : ControllerBase
     /// </summary>
     /// <param name="mentee">The updated Mentee object.</param>
     /// <returns>An ActionResult containing the updated Mentee.</returns>
-    [HttpPut]
+    [HttpPut("Update")]
     [ProducesResponseType(200)]
     public async Task<ActionResult<Mentee>> UpdateMentee(Mentee mentee)
     {

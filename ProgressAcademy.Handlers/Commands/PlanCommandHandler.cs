@@ -21,7 +21,7 @@ public class PlanCommandHandler :
     /// <param name="planRepository">The repository responsible for executing operations related to "Plan" entities.</param>
     public PlanCommandHandler(IPlanRepository planRepository)
     {
-        _planRepository = planRepository;
+        _planRepository = planRepository ?? throw new ArgumentNullException(nameof(planRepository));
     }
 
     /// <summary>
@@ -31,12 +31,12 @@ public class PlanCommandHandler :
     /// <param name="command">The command containing the "Plan" data to be created.</param>
     public async Task Handle(CreatePlanCommand command, CancellationToken cancellationToken)
     {
-        if(command?.Plan == null)
+        if (command?.Plan == null)
         {
             throw new ArgumentNullException($"CreatePlanCommand must not be null");
         }
 
-     await _planRepository.CreatePlanAsync(command.Plan, cancellationToken);
+        await _planRepository.CreatePlanAsync(command.Plan, cancellationToken);
     }
 
     /// <summary>
@@ -46,12 +46,12 @@ public class PlanCommandHandler :
     /// <param name="command">The command containing the updated "Plan" data.</param>
     public async Task Handle(UpdatePlanCommand command, CancellationToken cancellationToken)
     {
-        if(command?.Plan == null)
+        if (command?.Plan == null)
         {
             throw new ArgumentNullException($"UpdatePlanCommand must not be null");
         }
 
-       await _planRepository.UpdatePlanAsync(command.Plan, cancellationToken);
+        await _planRepository.UpdatePlanAsync(command.Plan, cancellationToken);
     }
 
     /// <summary>
@@ -61,11 +61,11 @@ public class PlanCommandHandler :
     /// <param name="command">The command indicating which "Plan" to delete.</param>
     public async Task Handle(DeletePlanCommand command, CancellationToken cancellationToken)
     {
-        if(command == null || command.PlanId == 0 )
+        if (command == null || command.PlanId == 0)
         {
             throw new ArgumentNullException($"DeletePlanCommand must not be null or PlanId must not be zero");
         }
 
-       await _planRepository.DeletePlanAsync(command.PlanId, cancellationToken);
+        await _planRepository.DeletePlanAsync(command.PlanId, cancellationToken);
     }
 }

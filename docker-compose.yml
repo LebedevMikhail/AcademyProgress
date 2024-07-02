@@ -1,43 +1,45 @@
-version: '3.8'
-
 services:
+  progressacademy-webapi:
+    build:
+      context: .
+      dockerfile: ProgressAcademy.WebApi/Dockerfile
+    ports:
+      - "7104:80"
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_DB_CONNECTION_STRING=mongodb://admin:123qwe@mongo:27017/ProgressAcademy
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=123qwe
+      - MONGO_INITDB_DATABASE=ProgressAcademy
+    networks:
+      - my-network
+
   mongo:
-    image: mongo:4.4 
+    image: mongo:4.4
     container_name: mongo
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 123qwe
+      MONGO_INITDB_DATABASE: ProgressAcademy
     ports:
-      - "27017:27017"
+      - "27018:27018"
+    volumes:
+      - mongo-data:/data/db
+      - ./ProgressAcademy.Data/scripts:/docker-entrypoint-initdb.d/
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 30s
+    networks:
+      - my-network
 
-  keycloak:
-    image: quay.io/keycloak/keycloak:latest
-    container_name: keycloak
-    restart: always
-    environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
-      DB_VENDOR: mongo
-      DB_ADDR: mongo
-      DB_PORT: 27017
-      DB_DATABASE: keycloak
-      DB_USER: keycloak
-      DB_PASSWORD: password
-      KEYCLOAK_IMPORT: /tmp/realm-export.json
-    volumes:
-      - ./keycloak-data:/opt/jboss/keycloak/standalone/data
-    ports:
-      - "8080:8080" 
-    depends_on:
-      mongo:
-        condition: service_healthy 
+networks:
+  my-network:
+    driver: bridge
 
 volumes:
   mongo-data:

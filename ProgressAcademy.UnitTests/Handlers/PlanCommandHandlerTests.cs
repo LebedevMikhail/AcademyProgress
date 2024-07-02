@@ -4,7 +4,7 @@ using ProgressAcademy.Application.Commands.Plan;
 using ProgressAcademy.Domain.Repositories;
 using ProgressAcademy.Handlers.Commands;
 
-namespace ProgressAcademy.UnitTests.Commands.Plan
+namespace ProgressAcademy.UnitTests.Handlers.Plan
 {
     [TestClass]
     public class PlanCommandHandlerTests

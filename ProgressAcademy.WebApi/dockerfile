@@ -1,0 +1,27 @@
+# Use the official .NET SDK image to build the application
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /source
+
+# Copy csproj and restore as distinct layers
+COPY *.sln .
+COPY ProgressAcademy.WebApi/*.csproj ProgressAcademy.WebApi/
+COPY ProgressAcademy.Application/*.csproj ProgressAcademy.Application/
+COPY ProgressAcademy.Infrastructure/*.csproj ProgressAcademy.Infrastructure/
+COPY ProgressAcademy.Domain/*.csproj ProgressAcademy.Domain/
+COPY ProgressAcademy.Data/*.csproj ProgressAcademy.Data/
+COPY ProgressAcademy.IntegrationTests/*.csproj ProgressAcademy.IntegrationTests/
+COPY ProgressAcademy.EndToEndTests/*.csproj ProgressAcademy.EndToEndTests/
+COPY ProgressAcademy.UnitTests/*.csproj ProgressAcademy.UnitTests/
+COPY ProgressAcademy.Handlers/*.csproj ProgressAcademy.Handlers/
+RUN dotnet restore
+
+# Copy everything else and build the app
+COPY . .
+WORKDIR /source/ProgressAcademy.WebApi
+RUN dotnet publish -c Release -o /app
+
+# Use the official .NET runtime image to run the application
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
+WORKDIR /app
+COPY --from=build /app .
+ENTRYPOINT ["dotnet", "ProgressAcademy.WebApi.dll"]

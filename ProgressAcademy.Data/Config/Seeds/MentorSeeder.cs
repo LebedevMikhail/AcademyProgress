@@ -2,48 +2,36 @@ using MongoDB.Driver;
 using ProgressAcademy.Domain.Models;
 using ProgressAcademy.Domain.ReadModels;
 
-namespace ProgressAcademy.Data.Config
+namespace ProgressAcademy.Data.Config.Seeds
 {
     /// <summary>
-    /// Class for seeding mentor data.
+    /// Class for seeding the Mentor collection with initial data.
     /// </summary>
-    public class MentorSeeder : IDataSeeder
+    public class MentorSeeder : DataSeeder
     {
-        private readonly IMongoCollection<Mentor> _mentorCollection;
+        private const string collectionName = "mentors";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MentorSeeder"/> class.
         /// </summary>
-        /// <param name="mentorCollection">The MongoDB collection for mentor data.</param>
-        public MentorSeeder(IMongoCollection<Mentor> mentorCollection)
-        {
-            _mentorCollection = mentorCollection;
-        }
+        /// <param name="database">An instance of <see cref="IMongoDatabase"/> representing the MongoDB database.</param>
+        public MentorSeeder(IMongoDatabase database) : base(database) => CreateCollectionIfNotExist(collectionName);
 
         /// <summary>
-        /// Method for seeding mentor data.
+        /// Seeds the Mentor collection with initial data.
         /// </summary>
-        public void SeedData()
+        public override async Task SeedDataAsync()
         {
-            var mentors = GenerateMentors(50); // Generate 50 mentor entities
-            _mentorCollection.InsertMany(mentors); // Insert mentor data into the collection
-        }
-
-        /// <summary>
-        /// Generates a list of mentor entities.
-        /// </summary>
-        /// <param name="count">The number of mentors to generate.</param>
-        /// <returns>A list of mentor entities.</returns>
-        private List<Mentor> GenerateMentors(int count)
-        {
-            var mentors = new List<Mentor>();
-
-            for (int i = 0; i < count; i++)
+            var collection = _database.GetCollection<Mentor>(collectionName);
+            if (await collection.EstimatedDocumentCountAsync() == 0)
             {
-                mentors.Add(new Mentor { FullName = $"Mentor {i + 1}", Mentees = new List<SimplifiedMentee>() });
+                var mentors = new List<Mentor>
+                {
+                    new Mentor { Id = 1, FullName = "Michael Smith", Mentees = new List<SimplifiedMentee>() },
+                    new Mentor { Id = 2, FullName = "Emily Johnson", Mentees = new List<SimplifiedMentee>() }
+                };
+                await collection.InsertManyAsync(mentors);
             }
-
-            return mentors;
         }
     }
 }

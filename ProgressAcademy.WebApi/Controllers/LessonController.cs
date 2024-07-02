@@ -23,14 +23,14 @@ public class LessonController : ControllerBase
     /// <param name="mediator">The MediatR IMediator instance used for sending commands and queries.</param>
     public LessonController(IMediator mediator)
     {
-        _mediator = mediator;
+        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
     /// <summary>
     /// Retrieves all lessons.
     /// </summary>
     /// <returns>A list of all lessons.</returns>
-    [HttpGet("GetAllLessons")]
+    [HttpGet("GetAll")]
     [ProducesResponseType(typeof(IEnumerable<Lesson>), 200)]
     public async Task<IActionResult> GetAllLessons()
     {
@@ -45,7 +45,7 @@ public class LessonController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the lesson to retrieve.</param>
     /// <returns>The lesson with the specified ID.</returns>
-    [HttpGet("GetLessonById")]
+    [HttpGet("GetById")]
     [ProducesResponseType(typeof(Lesson), 200)]
     public async Task<IActionResult> GetLessonById(int id)
     {
@@ -63,7 +63,7 @@ public class LessonController : ControllerBase
     /// </summary>
     /// <param name="lesson">The lesson object containing the details of the lesson to create.</param>
     /// <returns>A status indicating the result of the create operation.</returns>
-    [HttpPost]
+    [HttpPost("Create")]
     [ProducesResponseType(200)]
     public async Task<IActionResult> CreateLesson([FromBody] Lesson lesson)
     {
@@ -72,7 +72,7 @@ public class LessonController : ControllerBase
         {
             Lesson = lesson
         };
-      await  _mediator.Send(command, cancellationTokenSource.Token);
+        await _mediator.Send(command, cancellationTokenSource.Token);
         return Ok();
     }
 
@@ -81,9 +81,9 @@ public class LessonController : ControllerBase
     /// </summary>
     /// <param name="lesson">The updated lesson object.</param>
     /// <returns>A status indicating the result of the update operation.</returns>
-    [HttpPut]
+    [HttpPut("Update")]
     [ProducesResponseType(200)]
-    public async Task< IActionResult> UpdateLesson([FromBody] Lesson lesson)
+    public async Task<IActionResult> UpdateLesson([FromBody] Lesson lesson)
     {
         var cancellationTokenSource = new CancellationTokenSource();
         var command = new UpdateLessonCommand()
@@ -99,7 +99,7 @@ public class LessonController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the lesson to delete.</param>
     /// <returns>A status indicating the result of the delete operation.</returns>
-    [HttpDelete]
+    [HttpDelete("Delete")]
     [ProducesResponseType(200)]
     public async Task<IActionResult> DeleteLesson([FromBody] int id)
     {

@@ -11,7 +11,8 @@ namespace ProgressAcademy.Handlers.Commands;
 public class MentorCommandHandler :
         IRequestHandler<CreateMentorCommand>,
         IRequestHandler<UpdateMentorCommand>,
-        IRequestHandler<DeleteMentorCommand> {
+        IRequestHandler<DeleteMentorCommand>
+{
     private readonly IMentorRepository _mentorRepository;
 
     /// <summary>
@@ -20,7 +21,7 @@ public class MentorCommandHandler :
     /// <param name="mentorRepository">The repository responsible for data access operations related to mentors.</param>
     public MentorCommandHandler(IMentorRepository mentorRepository)
     {
-        _mentorRepository = mentorRepository;
+        _mentorRepository = mentorRepository ?? throw new ArgumentNullException(nameof(mentorRepository));
     }
 
     /// <summary>
@@ -30,12 +31,12 @@ public class MentorCommandHandler :
     /// <param name="command">The command containing the data for the mentor to be created.</param>
     public async Task Handle(CreateMentorCommand command, CancellationToken cancellationToken)
     {
-        if(command == null)
+        if (command == null)
         {
             throw new ArgumentNullException($"CreateMentorCommand must not be null");
         }
 
-       await _mentorRepository.CreateMentorAsync(command.Mentor, cancellationToken);
+        await _mentorRepository.CreateMentorAsync(command.Mentor, cancellationToken);
     }
 
     /// <summary>
@@ -45,12 +46,12 @@ public class MentorCommandHandler :
     /// <param name="command">The command with the updated mentor information.</param>
     public async Task Handle(UpdateMentorCommand command, CancellationToken cancellationToken)
     {
-        if(command == null)
+        if (command == null)
         {
             throw new ArgumentNullException($"UpdateMentorCommand must not be null");
         }
 
-       await _mentorRepository.UpdateMentorAsync(command.Mentor, cancellationToken);
+        await _mentorRepository.UpdateMentorAsync(command.Mentor, cancellationToken);
     }
 
     /// <summary>
@@ -60,11 +61,11 @@ public class MentorCommandHandler :
     /// <param name="command">The command indicating which mentor to delete.</param>
     public async Task Handle(DeleteMentorCommand command, CancellationToken cancellationToken)
     {
-        if(command == null)
+        if (command == null)
         {
             throw new ArgumentNullException($"DeleteMentorCommand must not be null");
         }
 
-       await _mentorRepository.DeleteMentorAsync(command.MentorId, cancellationToken);
+        await _mentorRepository.DeleteMentorAsync(command.MentorId, cancellationToken);
     }
 }

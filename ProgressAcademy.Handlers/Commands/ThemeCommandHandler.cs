@@ -17,7 +17,7 @@ namespace ProgressAcademy.Handlers.Commands.Theme
 
         public ThemeCommandHandler(IThemeRepository themeRepository)
         {
-            _themeRepository = themeRepository;
+            _themeRepository = themeRepository ?? throw new ArgumentNullException(nameof(themeRepository));;;
         }
 
         /// <summary>

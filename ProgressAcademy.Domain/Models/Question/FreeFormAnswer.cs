@@ -1,3 +1,6 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace ProgressAcademy.Domain.Models
 {
     /// <summary>
@@ -5,6 +8,15 @@ namespace ProgressAcademy.Domain.Models
     /// </summary>
     public class FreeFormQuestion : IQuestionAnswer
     {
+        /// <summary>
+        /// Gets or sets the unique identifier for the multiple choice answer.
+        /// </summary>
+        /// <remarks>
+        /// The identifier is represented as an ObjectId in the MongoDB collection, ensuring uniqueness across documents.
+        /// </remarks>
+        [BsonId]
+        [BsonRepresentation(BsonType.Int32)]
+        public int Id { get; set; }
         /// <summary>
         /// The question text.
         /// </summary>

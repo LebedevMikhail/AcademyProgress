@@ -22,7 +22,7 @@ public class MenteeCommandHandler :
     /// <param name="menteeRepository">The repository to interact with mentee data.</param>
     public MenteeCommandHandler(IMenteeRepository menteeRepository)
     {
-        _menteeRepository = menteeRepository;
+        _menteeRepository = menteeRepository ?? throw new ArgumentNullException(nameof(menteeRepository));
     }
 
     /// <summary>
@@ -36,7 +36,7 @@ public class MenteeCommandHandler :
             throw new ArgumentNullException($"CreateMenteeCommand must not be null");
         }
 
-        _menteeRepository.CreateMenteeAsync(command.Mentee, cancellationToken);
+        await _menteeRepository.CreateMenteeAsync(command.Mentee, cancellationToken);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class MenteeCommandHandler :
         {
             throw new ArgumentNullException($"UpdateMenteeCommand must not be null");
         }
-        _menteeRepository.UpdateMenteeAsync(command.Mentee, cancellationToken);
+       await _menteeRepository.UpdateMenteeAsync(command.Mentee, cancellationToken);
     }
 
     /// <summary>
@@ -62,6 +62,6 @@ public class MenteeCommandHandler :
         {
             throw new ArgumentNullException($"DeleteMenteeCommand must not be null");
         }
-        _menteeRepository.DeleteMenteeAsync(command.MenteeId, cancellationToken);
+       await _menteeRepository.DeleteMenteeAsync(command.MenteeId, cancellationToken);
     }
 }
